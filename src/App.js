@@ -1,9 +1,17 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import AuthService from './AuthService';
 
 class App extends Component {
+  constructor() {
+    super();
+    this.authService = new AuthService();
+  }
+
   render() {
+    this.authService.login();
+
     return (
       <div className="App">
         <header className="App-header">
