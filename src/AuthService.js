@@ -14,4 +14,27 @@ export default class AuthService {
   login() {
     this.auth0.authorize();
   }
+  
+  handleAuthentication(history) {
+    this.auth0.parseHash((err, authResult) => {
+      if (authResult && authResult.accessToken && authResult.idToken) {
+        this.setSession(authResult);
+        history.push("/");
+      } else if (err) {
+        console.log(err);
+      }
+    });
+  }
+
+  setSession(authResult) {
+    let expiresAt = JSON.stringify((authResult.expiresIn * 1000) + new Date().getTime());
+    localStorage.setItem('access_token', authResult.accessToken);
+    localStorage.setItem('id_token', authResult.idToken);
+    localStorage.setItem('expires_at', expiresAt);
+  }
+
+  isAuthenticated() {
+    let expiresAt = JSON.parse(localStorage.getItem('expires_at'));
+    return new Date().getTime() < expiresAt;
+  }
 }
